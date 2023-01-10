@@ -12,7 +12,9 @@ Linux tool to download all course files into their respective directory trees.
 
 ## Usage
 
-1. Set `#define` directives in `main.cpp`
+1. Rename `sample.defines.h` to `defines.h`
+
+2. Set `#define` directives in `defines.h`
 ```cpp
 #define DEFAULTROOTPATH "course files"
 #define TERMID -1 // semester ID; leave as -1 if unsure
