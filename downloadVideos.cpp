@@ -38,8 +38,8 @@ typedef struct {
 std::vector<Video> listVideosByFolder(CURL *curl, Folder folder);
 
 std::map<std::string, std::string> courses = {
-    {"cs2030s", "5a3de09c-6d53-4434-80a1-af8200ddb1da"},
-    {"ma1521", "8e47ae11-e9fb-45c8-87a6-af6600729731"},
+    // {"cs2030s", "5a3de09c-6d53-4434-80a1-af8200ddb1da"},
+    // {"ma1521", "8e47ae11-e9fb-45c8-87a6-af6600729731"},
     {"es2660", "56878ca2-f88b-4a58-a5af-af82011924c8"},
     {"is1108", ""}
 };
@@ -83,7 +83,11 @@ int main(int argc, char *argv[]){
                 isFolderEmpty = false;
                 writeFile(curl, folder.path, video.url, video.name);
             }
-            if (!isFolderEmpty) std::cout << std::endl;
+            if (isFolderEmpty) {
+                std::printf("\033[1;31mEMPTY\033[0m\n");
+            } else {
+                std::cout << std::endl;
+            }
         }
         std::cout << std::endl;
     }
@@ -144,7 +148,7 @@ std::vector<Folder> listFoldersByCourse(CURL *curl, std::string courseID, std::s
 }
 
 std::vector<Video> listVideosByFolder(CURL *curl, Folder folder) {
-    std::printf("Folder: %s\n", folder.name.c_str());
+    std::printf("Folder:\033[1;33m %s\033[0m\n", folder.name.c_str());
 
     // set URI
     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "POST");
@@ -193,7 +197,6 @@ std::vector<Video> listVideosByFolder(CURL *curl, Folder folder) {
 }
 
 bool writeFile(CURL *curl, std::string folderpath, std::string url, std::string name) {
-    std::cout << name << std::endl;
     // setup
     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, NULL);
