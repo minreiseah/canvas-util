@@ -1,10 +1,23 @@
 default: build
 
-build: clean
-	g++ main.cpp -Wall -o main -lcurl -ljsoncpp
+buildfiles: cleanfiles
+	g++ downloadFiles.cpp -Wall -o downloadFiles -lcurl -ljsoncpp
 
-clean:
-	rm -rf main
+cleanfiles:
+	rm -rf downloadFiles
 
-run: build
-	./main
+files: buildfiles
+	./downloadFiles
+
+buildvideos: cleanvideos
+	g++ downloadVideos.cpp -Wall -o downloadVideos -lcurl -ljsoncpp
+
+cleanvideos:
+	rm -rf downloadVideos
+
+videos: buildvideos
+	./downloadVideos
+
+run: buildfiles buildvideos
+	./downloadFiles
+	./downloadVideos

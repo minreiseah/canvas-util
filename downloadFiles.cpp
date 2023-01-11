@@ -49,6 +49,8 @@ std::string formatPath(std::string path, std::string code);
 bool writeFile(CURL *curl, std::string path, std::string url, std::string name);
 
 int main() {
+    std::printf("\033[1;36mDOWNLOADING FILES\033[0m\n");
+
     // setup
     std::string baseURL;
     baseURL = BASEURL;
@@ -77,31 +79,27 @@ int main() {
     std::vector<Course> courses = listCourses(baseURL, curl);
 
     for(auto &course : courses) {
-        std::cout << "Processing Course: " << course.name << std::endl;
+        std::printf("Processing Course:\033[1;35m %s\033[0m\n", course.name.c_str());
 
         // get folders
         std::vector<Folder> folders = listFoldersByCourse(baseURL, curl, course);
+        bool isFolderEmpty = true;
 
         for(auto &folder : folders) {
-            std::cout << "Folder: " << folder.name << std::endl;
-
-            // get files
             std::vector<File> files = listFilesByFolder(baseURL, curl, folder.id);
 
             for(auto &file : files) {
-                std::cout << "File: " << file.name;
+                isFolderEmpty = false;
                 bool writeSuccessful = writeFile(curl, folder.path, file.url, file.name);
                 if(!writeSuccessful) {
-                    std::cout << " FAILED" << std::endl;
+                    std::cout << "\033[1;31m FAILED\033[0m\n";
                     return 1;
                 } else {
-                    std:: cout<< " SUCCESS" << std::endl;
+                    std::cout << "\033[1;32m SUCCESS\033[0m\n";
                 }
             }
-
-            std::cout << std::endl;
+            if (!isFolderEmpty) std::cout << std::endl;
         }
-
         std::cout << std::endl;
     }
 
@@ -125,8 +123,8 @@ size_t writeCallback(char *ptr, size_t size, size_t nmemb, void *userdata) {
 }
 
 size_t writeData(void *ptr, size_t size, size_t nmemb, void *stream) {
-  size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
-  return written;
+    size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
+    return written;
 }
 
 std::vector<Course> listCourses(std::string baseURL, CURL *curl) {
@@ -144,7 +142,7 @@ std::vector<Course> listCourses(std::string baseURL, CURL *curl) {
     CURLcode res;
     res = curl_easy_perform(curl);
     if (res != CURLE_OK) {
-        std:: cout << &"ERROR: " [ (int)res];
+        std::cout << "LIBCURL ERROR: " << (int)res << std::endl;
     }
 
     // parse response
@@ -186,7 +184,7 @@ std::vector<Folder> listFoldersByCourse(std::string baseURL, CURL *curl, Course&
     CURLcode res;
     res = curl_easy_perform(curl);
     if (res != CURLE_OK) {
-        std:: cout << &"ERROR: " [ (int)res];
+        std::cout << "LIBCURL ERROR: " << (int)res << std::endl;
     }
 
     // parse response
@@ -228,7 +226,7 @@ std::vector<File> listFilesByFolder(std::string baseURL, CURL *curl, int file) {
     CURLcode res;
     res = curl_easy_perform(curl);
     if (res != CURLE_OK) {
-        std:: cout << &"ERROR: " [ (int)res];
+        std::cout << "LIBCURL ERROR: " << (int)res << std::endl;
         return {};
     }
 
@@ -280,9 +278,11 @@ bool writeFile(CURL *curl, std::string path, std::string url, std::string name) 
 
     // set file response
     FILE* fp = std::fopen(filepath.c_str(), "wb");
+    std::printf("%s", filepath.c_str());
     if(fp) {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+
         // perform request
         CURLcode res;
         res = curl_easy_perform(curl);
@@ -290,12 +290,10 @@ bool writeFile(CURL *curl, std::string path, std::string url, std::string name) 
         std::fclose(fp);
 
         if (res != CURLE_OK) {
-            std:: cout << &"ERROR: " [ (int)res];
+            std::cout << "LIBCURL ERROR: " << (int)res << std::endl;
             return 0;
         }
 
     }
-
-
     return 1;
 }
