@@ -2,7 +2,7 @@
 
 ## Description
 
-Linux tool to download all course files into their respective directory trees.
+Linux tool to download all course files and videos into their respective directory trees.
 
 ## Dependencies
 
