@@ -66,7 +66,6 @@ int main() {
     curl_easy_setopt(curl, CURLOPT_UNRESTRICTED_AUTH, 1L);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-    curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, 1L);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
     curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L); // fail on 400 or 500
@@ -129,8 +128,8 @@ size_t writeData(void *ptr, size_t size, size_t nmemb, void *stream) {
 
 std::vector<Course> listCourses(std::string baseURL, CURL *curl) {
     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
-    std::string path = "courses";
-    std::string query = baseURL + "/" + path;
+    std::string path = "/courses?enrollment_state=active";
+    std::string query = baseURL + path;
     curl_easy_setopt(curl, CURLOPT_URL, query.c_str());
 
     // set response

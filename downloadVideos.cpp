@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <regex>
+#include <sys/stat.h>
 
 #include <curl/curl.h>
 #include <jsoncpp/json/json.h>
@@ -38,8 +39,8 @@ typedef struct {
 std::vector<Video> listVideosByFolder(CURL *curl, Folder folder);
 
 std::map<std::string, std::string> courses = {
-    // {"cs2030s", "5a3de09c-6d53-4434-80a1-af8200ddb1da"},
-    // {"ma1521", "8e47ae11-e9fb-45c8-87a6-af6600729731"},
+    {"cs2030s", "5a3de09c-6d53-4434-80a1-af8200ddb1da"},
+    {"ma1521", "8e47ae11-e9fb-45c8-87a6-af6600729731"},
     {"es2660", "56878ca2-f88b-4a58-a5af-af82011924c8"},
     {"is1108", ""}
 };
@@ -61,7 +62,6 @@ int main(int argc, char *argv[]){
     curl_easy_setopt(curl, CURLOPT_UNRESTRICTED_AUTH, 1L);
 
     curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "https");
-    curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, 1L);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
     curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L); // fail on 400 or 500
@@ -212,6 +212,15 @@ bool writeFile(CURL *curl, std::string folderpath, std::string url, std::string 
     std::string filepath = buildFilePath(folderpath, name, "mp4");
     FILE* fp = std::fopen(filepath.c_str(), "wb");
     std::printf("%s", filepath.c_str());
+
+    // check if file already exists
+    struct stat buffer;
+    bool fileExists = stat (filepath.c_str(), &buffer) == 0;
+    if(fileExists) {
+        std::cout << "\033[1;32m EXISTS\033[0m\n";
+        return 1;
+    }
+
     if(fp) {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeData);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
