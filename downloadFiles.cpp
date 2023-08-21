@@ -213,7 +213,8 @@ std::vector<Folder> listFoldersByCourse(std::string baseURL, CURL *curl, Course&
 std::vector<File> listFilesByFolder(std::string baseURL, CURL *curl, int file) {
     // setup
     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "GET");
-    std::string query = baseURL + "/folders/" + std::to_string(file) + "/files";
+    std::string additional_query = "?include[]=user&include[]=usage_rights&include[]=enhanced_preview_url&include[]=context_asset_string&per_page=100&sort=&order=";
+    std::string query = baseURL + "/folders/" + std::to_string(file) + "/files" + additional_query;
     curl_easy_setopt(curl, CURLOPT_URL, query.c_str());
 
     // set response
