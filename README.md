@@ -45,6 +45,8 @@ To get the courseID, go to canvas > Videos/Panopto. Open chrome dev tools > Netw
 > make run
 ```
 
+If there are issues, re-update `defines.h`. If it still doesn't work, try using postman.
+
 ## Features to add
 
 - On download, save file info (name, id, lastUpdated) to log.

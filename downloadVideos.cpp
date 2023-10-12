@@ -122,7 +122,7 @@ std::vector<Folder> listFoldersByCourse(CURL *curl, std::string folderID, std::s
   CURLcode res;
   res = curl_easy_perform(curl);
   if (res != CURLE_OK) {
-    std::cout << "LIBCURL ERROR: " << (int)res << std::endl;
+    std::cout << "LIBCURL ERROR in Getting Folders: " << (int)res << std::endl;
     return {};
   }
 
